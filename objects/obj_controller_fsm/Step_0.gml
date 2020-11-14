@@ -9,25 +9,40 @@ if (ds_queue_size(buffer_queue) > 0) {
 	var _buffer_state = ds_queue_head(buffer_queue);
 	if _buffer_state.myState == state.target_attack {
 		if keyboard_check_pressed(vk_escape) {
-			targeted = 0;
+			targeted = -1;
 			for (var i = 0; i < ds_list_size(ennemies); i++) {
 				ennemies[| i].image_alpha = 1;
 			}
 			ds_queue_dequeue(buffer_queue);
 		}
-		if keyboard_check_pressed(vk_up) {
+		
+		if targeted == -1 {
 			if ennemies[| 0].hp > 0 {
 				targeted = 0;
 			} else if ennemies[| 1].hp > 0 {
 				targeted = 1;
-			}
-		} else if keyboard_check_pressed(vk_down) {
-			if ennemies[| 3].hp > 0 {
+			} else if ennemies[| 3].hp > 0 {
 				targeted = 3;
-			} else if ennemies[| 2].hp > 0 {
+			} else {
 				targeted = 2;
 			}
+		} else if keyboard_check_pressed(vk_up) or keyboard_check_pressed(vk_down) {
+			if targeted == 0 or targeted == 1 {
+				if ennemies[| 3].hp > 0 {
+					targeted = 3;
+				} else if ennemies[| 2].hp > 0 {
+					targeted = 2;
+				}
+			} else {
+				if ennemies[| 0].hp > 0 {
+					targeted = 0;
+				} else if ennemies[| 1].hp > 0 {
+					targeted = 1;
+				}
+			}
 		}
+		
+		
 		if buffer == "" {
 			scr_show_target_ennemies(ennemies, targeted);
 			if keyboard_check_pressed(vk_enter) {
@@ -37,7 +52,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 				ds_queue_dequeue(fsm_queue);
 				ds_queue_enqueue(fsm_queue, new State(state.attack, _buffer_state.myPlayer, ennemies[| targeted]));
 				ds_queue_dequeue(buffer_queue);
-				targeted = 0;
+				targeted = -1;
 			}
 		} else buffer = "";
 		
@@ -55,24 +70,37 @@ if (ds_queue_size(buffer_queue) > 0) {
 	
 	} else if _buffer_state.myState == state.target_spell {
 		if keyboard_check_pressed(vk_escape) {
-			targeted = -10;
+			targeted = -1;
 			ds_queue_dequeue(buffer_queue);
 			ds_queue_enqueue(buffer_queue, new State(state.choose_spell, _buffer_state.myPlayer, noone));
 		}
 		
-		if keyboard_check_pressed(vk_up) {
+		if targeted == -1 {
 			if ennemies[| 0].hp > 0 {
 				targeted = 0;
 			} else if ennemies[| 1].hp > 0 {
 				targeted = 1;
-			}
-		} else if keyboard_check_pressed(vk_down) {
-			if ennemies[| 3].hp > 0 {
+			} else if ennemies[| 3].hp > 0 {
 				targeted = 3;
-			} else if ennemies[| 2].hp > 0 {
+			} else {
 				targeted = 2;
 			}
+		} else if keyboard_check_pressed(vk_up) or keyboard_check_pressed(vk_down) {
+			if targeted == 0 or targeted == 1 {
+				if ennemies[| 3].hp > 0 {
+					targeted = 3;
+				} else if ennemies[| 2].hp > 0 {
+					targeted = 2;
+				}
+			} else {
+				if ennemies[| 0].hp > 0 {
+					targeted = 0;
+				} else if ennemies[| 1].hp > 0 {
+					targeted = 1;
+				}
+			}
 		}
+		
 		if buffer == "" {
 			scr_show_target_ennemies(ennemies, targeted);
 			// C'est pété
@@ -201,7 +229,6 @@ if (ds_queue_size(buffer_queue) > 0) {
 	
 	//Fleche et personnage qui scintille
 	playingPlayer = curr_state.myPlayer;
-	
 	
 	
 } else if curr_state.myState == state.attack {
