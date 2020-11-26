@@ -17,3 +17,5 @@ name = "";
 name_w = 0;
 
 desc = "";
+
+mana = -1;

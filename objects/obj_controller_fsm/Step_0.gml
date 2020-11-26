@@ -183,7 +183,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		simon = noone;
 		var _next_state = scr_return_chosen_state(buffer);
 		ds_queue_enqueue(buffer_queue, new State(_next_state, curr_state.myPlayer, noone));
-		//ds_queue_dequeue(fsm_queue);
+
 		buffer = "";
 	}
 	
@@ -237,7 +237,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		if ds_queue_empty(fsm_queue) {
 			for ( var i = 0; i < ds_list_size(players); i++ ) {
 				if players[| i].hp > 0 {
-					//if ds_queue_size(fsm_queue) == 0 ds_queue_enqueue(fsm_queue, new State(state.end_turn, noone, noone));
+
 					ds_queue_enqueue(fsm_queue, new State(state.choose_act, players[| i], noone));
 				}
 			}
@@ -260,32 +260,37 @@ if (ds_queue_size(buffer_queue) > 0) {
 	
 	if buffer != "" {
 		if !instance_exists(obj_mana_particle_win) {
-			global.snap_mana = sprite_create_from_surface(application_surface, (room_width - 224) / 2-3, room_height/2-3, 231, 231, false, false, 0, 0);
-			sprite_set_offset(global.snap_mana, sprite_get_width(global.snap_mana)/2, sprite_get_height(global.snap_mana)/2);
-			instance_create_layer(0,0,"Instances",obj_mana_particle_win);
+			if !sprite_exists(global.snap_mana) { 
+				global.snap_mana = sprite_create_from_surface(application_surface, (room_width - 224) / 2-3, room_height/2-3, 231, 231, false, false, 0, 0);
+				sprite_set_offset(global.snap_mana, sprite_get_width(global.snap_mana)/2, sprite_get_height(global.snap_mana)/2);
+				instance_create_layer(0,0,"Instances",obj_mana_particle_win);
+			}
 		} else if sprite_exists(global.snap_mana) {
-			fade_timer--;
-			if (fade_timer <=0) {
-				fade_timer = fade_time;
-				part_particles_create(obj_mana_particle_win.particleSystem, (room_width - 224) / 2 + sprite_get_width(global.snap_mana)/2-3,room_height/2+ 115-3, obj_mana_particle_win.particleType_Fade, 1);
+
+				
+			
+		}
+
+		if buffer != "" {
+			instance_destroy(_mg);
+			if buffer == "SPELL_SUCCESS" {
+				// pour les particules
+				fade_timer--;
+				if (fade_timer <=0) {
+					fade_timer = fade_time;
+					
+				}
+				//apply effect
+				if curvePos >= 1 curr_state.myPlayer.chosen_spell.Effect(self, curr_state.myEnnemy)
+			}
+			if curvePos >= 1 {
+				curvePos = 0;
+				ds_queue_dequeue(fsm_queue);
+				buffer = "";
 			}
 		}
-		//if !file_exists("manascreen.png") screen_save_part("manascreen.png", (room_width - 224) / 2-3, room_height/2-3, 225+6,  225+6)
-		if keyboard_check_pressed(vk_f8){
-			if buffer = "SPELL_MISSED" {
-				ds_queue_dequeue(fsm_queue);
-				instance_destroy(_mg);
-				//curr_state.myPlayer.chosen_spell = noone;
-				buffer = "";
-			} else if buffer = "SPELL_SUCCESS" {
-				// Apply effect
-				ds_queue_dequeue(fsm_queue);
-				instance_destroy(_mg);
-				//curr_state.myPlayer.chosen_spell = noone;
-				buffer = "";
-				curr_state.myPlayer.chosen_spell.Effect(self, curr_state.myEnnemy)
-			}
-		}
+		
+
 	}
 
 	//Si la pile est vide => Il n'y a plus de joueurs en attente, on passe aux ennemis

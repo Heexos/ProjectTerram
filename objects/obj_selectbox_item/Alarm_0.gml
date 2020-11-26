@@ -1,6 +1,9 @@
 /// @description Insérez la description ici
 // Vous pouvez écrire votre code dans cet éditeur
-var _mana = global.items[| select].manaRestore;
 
-if _mana > 0
-	scr_display_points(player, c_aqua, _mana)
+if mana > 0 {
+	show_debug_message("yo");
+	scr_display_points(player, c_aqua, mana)
+}
+
+instance_destroy(self);
