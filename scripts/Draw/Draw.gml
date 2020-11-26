@@ -1,6 +1,7 @@
 // Script assets have changed for v2.3.0 see
 // https://help.yoyogames.com/hc/en-us/articles/360005277377 for more information
-function scr_create_textbox(_creator, _text){
+function scr_create_textbox(_creator, _text) {
+
 	if !instance_exists(obj_textbox) {
 			_myTextBox = instance_create_layer(0,0,"GUI", obj_textbox);
 			_myTextBox.creator = _creator;
@@ -10,8 +11,7 @@ function scr_create_textbox(_creator, _text){
 }
 
 function draw_rectangle_width(_x1, _y1, _x2, _y2, _thickness, _color) {
-
-
+	
 	draw_set_color(_color)
 
 	draw_line_width(_x1 - _thickness/2, _y1, _x2 + _thickness/2, _y1, _thickness) // Top
@@ -29,17 +29,6 @@ function scr_wave(_from, _to, _duration, _offset, _timer) {
 }
 
 function scr_health_circle(argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8) {
-	//scr_health_circle(x,y,radius,maxsegments,segments,startangle,totalangle,direction,colour)
-
-	//argument0 = x
-	//argument1 = y
-	//argument2 = radius
-	//argument3 = maxsegments
-	//argument4 = segments
-	//argument5 = startangle
-	//argument6 = totalangle
-	//argument7 = direction
-	//argument8 = colour
 
 	var anglechange = (argument6/argument3)*(pi/180)
 	var i = argument5*(pi/180)
@@ -63,17 +52,6 @@ function scr_health_circle(argument0, argument1, argument2, argument3, argument4
 }
 
 function scr_draw_progress(argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9) {
-	//scr_draw_rectangle_outline_v2(x1, y1, x2, y2, thickness, c_background, c_progress, c_finish, curr_progress, max_progress)
-
-	//@param x1
-	//@param y1
-	//@param x2
-	//@param y2
-	//@param thickness
-	//@param c_background
-	//@param c_progress
-	//@param curr_progress
-	//@param max_progress
 
 	var x1 = argument0
 	var y1 = argument1
@@ -121,4 +99,43 @@ function scr_unitary_random() {
 		return -1
 	}
 	
+}
+
+function scr_show_target_ennemies(_ennemy_list, _index) {
+
+	for (var i = 0; i < ds_list_size(_ennemy_list); i++) {
+		if i == _index {
+			_ennemy_list[| i].image_alpha = 0.5 + lengthdir_x(0.5,current_time*0.25)
+		} else if _ennemy_list[| i].image_alpha < 1 _ennemy_list[| i].image_alpha = 1
+	}
+
+
+}
+
+function scr_draw_text_shadow(_x, _y, _string, _font, _shadow_size, _shadow_colour, _text_colour) {
+    draw_set_font(_font);
+    draw_set_colour(_shadow_colour);
+    draw_text((_x + _shadow_size), (_y + _shadow_size), string(_string));
+    draw_set_colour(_text_colour);
+    draw_text(_x, _y, string(_string));
+
+}
+
+function scr_display_points(_inst, _col, _value) {
+	var _i = instance_create_layer(_inst.x, _inst.y, "Instances", obj_display_points);
+	_i.col = _col;
+	_i.str = string(round(_value));
+}
+
+function scr_select_damage_color(_dmg, _max_dmg) {
+	var _col = undefined;
+	if _dmg == _max_dmg {
+		_col = c_red;
+	} else if _dmg > .5*_max_dmg {
+		_col = c_orange;
+	} else {
+		
+		_col = c_yellow;
+	}
+	return _col;
 }

@@ -3,52 +3,23 @@
 
 //Lecture de la file
 if !ds_queue_empty(fsm_queue) curr_state = ds_queue_head(fsm_queue);
-if keyboard_check_pressed(vk_f6) show_debug_message(string(curr_state) + " Queue Size : " + string (ds_queue_size(fsm_queue)))
 
 if (ds_queue_size(buffer_queue) > 0) {
 	var _buffer_state = ds_queue_head(buffer_queue);
 	if _buffer_state.myState == state.target_attack {
 		if keyboard_check_pressed(vk_escape) {
 			targeted = -1;
-			for (var i = 0; i < ds_list_size(ennemies); i++) {
-				ennemies[| i].image_alpha = 1;
-			}
+			scr_reset_alpha_ennemies(ennemies);
 			ds_queue_dequeue(buffer_queue);
 		}
 		
-		if targeted == -1 {
-			if ennemies[| 0].hp > 0 {
-				targeted = 0;
-			} else if ennemies[| 1].hp > 0 {
-				targeted = 1;
-			} else if ennemies[| 3].hp > 0 {
-				targeted = 3;
-			} else {
-				targeted = 2;
-			}
-		} else if keyboard_check_pressed(vk_up) or keyboard_check_pressed(vk_down) {
-			if targeted == 0 or targeted == 1 {
-				if ennemies[| 3].hp > 0 {
-					targeted = 3;
-				} else if ennemies[| 2].hp > 0 {
-					targeted = 2;
-				}
-			} else {
-				if ennemies[| 0].hp > 0 {
-					targeted = 0;
-				} else if ennemies[| 1].hp > 0 {
-					targeted = 1;
-				}
-			}
-		}
+		targeted = scr_target_ennemies(ennemies, targeted);
 		
 		
 		if buffer == "" {
 			scr_show_target_ennemies(ennemies, targeted);
 			if keyboard_check_pressed(vk_enter) {
-				for (var i = 0; i < ds_list_size(ennemies); i++) {
-					ennemies[| i].image_alpha = 1;
-				}
+				scr_reset_alpha_ennemies(ennemies);
 				ds_queue_dequeue(fsm_queue);
 				ds_queue_enqueue(fsm_queue, new State(state.attack, _buffer_state.myPlayer, ennemies[| targeted]));
 				ds_queue_dequeue(buffer_queue);
@@ -75,41 +46,14 @@ if (ds_queue_size(buffer_queue) > 0) {
 			ds_queue_enqueue(buffer_queue, new State(state.choose_spell, _buffer_state.myPlayer, noone));
 		}
 		
-		if targeted == -1 {
-			if ennemies[| 0].hp > 0 {
-				targeted = 0;
-			} else if ennemies[| 1].hp > 0 {
-				targeted = 1;
-			} else if ennemies[| 3].hp > 0 {
-				targeted = 3;
-			} else {
-				targeted = 2;
-			}
-		} else if keyboard_check_pressed(vk_up) or keyboard_check_pressed(vk_down) {
-			if targeted == 0 or targeted == 1 {
-				if ennemies[| 3].hp > 0 {
-					targeted = 3;
-				} else if ennemies[| 2].hp > 0 {
-					targeted = 2;
-				}
-			} else {
-				if ennemies[| 0].hp > 0 {
-					targeted = 0;
-				} else if ennemies[| 1].hp > 0 {
-					targeted = 1;
-				}
-			}
-		}
+		targeted = scr_target_ennemies(ennemies, targeted);
 		
 		if buffer == "" {
 			scr_show_target_ennemies(ennemies, targeted);
-			// C'est pété
 			if keyboard_check_pressed(vk_enter) {
-				for (var i = 0; i < ds_list_size(ennemies); i++) {
-					ennemies[| i].image_alpha = 1;
-				}
-				show_debug_message("ICIIIIIII")
-				_buffer_state.myPlayer.mana -= _buffer_state.myPlayer.chosen_spell.manaCost
+				scr_reset_alpha_ennemies(ennemies);
+				_buffer_state.myPlayer.mana -= _buffer_state.myPlayer.chosen_spell.manaCost;
+				scr_display_points(_buffer_state.myPlayer, c_navy, _buffer_state.myPlayer.chosen_spell.manaCost);
 				ds_queue_dequeue(fsm_queue);
 				ds_queue_enqueue(fsm_queue, new State(state.use_spell, _buffer_state.myPlayer, ennemies[| targeted]));
 				ds_queue_dequeue(buffer_queue);
@@ -118,6 +62,22 @@ if (ds_queue_size(buffer_queue) > 0) {
 		} else buffer = "";
 		
 
+		
+		
+	} else if _buffer_state.myState == state.choose_item {
+
+		
+		if !instance_exists(obj_selectbox_item) {
+			var _box = instance_create_layer(0,0,"Instances", obj_selectbox_item);
+			_box.creator = self;
+			_box.player = _buffer_state.myPlayer;
+		}
+		
+				
+		if keyboard_check_pressed(vk_escape) {
+			ds_queue_dequeue(buffer_queue);
+			instance_destroy(obj_selectbox_item);
+		}
 		
 		
 		
@@ -146,11 +106,11 @@ if (ds_queue_size(buffer_queue) > 0) {
 //State : Start
 } else if curr_state.myState == state.start {
 	//Création de la boite de texte
-	var _tb = scr_create_textbox(self, ["Salut salut", "Nouvelle version, nouvelles fonctionnalités et surement nouveaux bugs", "N'oubliez pas de donner votre avis, remarques, bugs...", "C'est pour avoir un retour que je vous fait tester !", "Enjoy"])
+	var _tb = scr_create_textbox(self, ["Trop bien ce jeu", "Merci bcp frr", "tkt"])
 	
 	// Animation de FOU FURIEU
 	if !instance_exists(players_to_generate[| 0]) {
-		var _player = instance_create_layer(100,120,"Instances", players_to_generate[| 0]);
+		var _player = instance_create_layer(130,150,"Instances", players_to_generate[| 0]);
 		ds_list_add(players, _player);
 		var _hb = instance_create_layer(10,10,"GUI", obj_healthbar);
 		_hb.owner = _player;
@@ -158,7 +118,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		_mb.owner = _player;
 	}
 	if !instance_exists(players_to_generate[| 1]) {
-		var _player = instance_create_layer(25,140, "Instances", players_to_generate[| 1]);
+		var _player = instance_create_layer(60,180, "Instances", players_to_generate[| 1]);
 		ds_list_add(players, _player);
 		var _hb = instance_create_layer(10,50,"GUI", obj_healthbar);
 		_hb.owner = _player;
@@ -241,6 +201,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		instance_destroy(mg);
 		//Application des damage
 		curr_state.myEnnemy.hp -= _dmg;
+		scr_display_points(curr_state.myEnnemy, scr_select_damage_color(_dmg, _wp.dmg), _dmg);
 		//File gestion
 		ds_queue_dequeue(fsm_queue);
 		//Si la pile est vide => Il n'y a plus de joueurs en attente, on passe aux ennemis
@@ -296,18 +257,35 @@ if (ds_queue_size(buffer_queue) > 0) {
 		_mg = instance_create_layer(0,0,"Instances",curr_state.myPlayer.chosen_spell.obj);
 		_mg.creator = self;
 	}
-	if buffer = "SPELL_MISSED" {
-		ds_queue_dequeue(fsm_queue);
-		instance_destroy(_mg);
-		//curr_state.myPlayer.chosen_spell = noone;
-		buffer = "";
-	} else if buffer = "SPELL_SUCCESS" {
-		// Apply effect
-		ds_queue_dequeue(fsm_queue);
-		instance_destroy(_mg);
-		//curr_state.myPlayer.chosen_spell = noone;
-		buffer = "";
-		curr_state.myPlayer.chosen_spell.Effect(self, curr_state.myEnnemy)
+	
+	if buffer != "" {
+		if !instance_exists(obj_mana_particle_win) {
+			global.snap_mana = sprite_create_from_surface(application_surface, (room_width - 224) / 2-3, room_height/2-3, 231, 231, false, false, 0, 0);
+			sprite_set_offset(global.snap_mana, sprite_get_width(global.snap_mana)/2, sprite_get_height(global.snap_mana)/2);
+			instance_create_layer(0,0,"Instances",obj_mana_particle_win);
+		} else if sprite_exists(global.snap_mana) {
+			fade_timer--;
+			if (fade_timer <=0) {
+				fade_timer = fade_time;
+				part_particles_create(obj_mana_particle_win.particleSystem, (room_width - 224) / 2 + sprite_get_width(global.snap_mana)/2-3,room_height/2+ 115-3, obj_mana_particle_win.particleType_Fade, 1);
+			}
+		}
+		//if !file_exists("manascreen.png") screen_save_part("manascreen.png", (room_width - 224) / 2-3, room_height/2-3, 225+6,  225+6)
+		if keyboard_check_pressed(vk_f8){
+			if buffer = "SPELL_MISSED" {
+				ds_queue_dequeue(fsm_queue);
+				instance_destroy(_mg);
+				//curr_state.myPlayer.chosen_spell = noone;
+				buffer = "";
+			} else if buffer = "SPELL_SUCCESS" {
+				// Apply effect
+				ds_queue_dequeue(fsm_queue);
+				instance_destroy(_mg);
+				//curr_state.myPlayer.chosen_spell = noone;
+				buffer = "";
+				curr_state.myPlayer.chosen_spell.Effect(self, curr_state.myEnnemy)
+			}
+		}
 	}
 
 	//Si la pile est vide => Il n'y a plus de joueurs en attente, on passe aux ennemis
@@ -342,6 +320,5 @@ if (ds_queue_size(buffer_queue) > 0) {
 		}
 			
 		if _ennemies_remain == 0 ds_queue_enqueue(buffer_queue, new State(state.end_win, noone, noone));
-	
 	
 }

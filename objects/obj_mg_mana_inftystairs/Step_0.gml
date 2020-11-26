@@ -9,7 +9,7 @@ if !instance_exists(obj_mana_player) {
 }
 
 
-while ds_list_size(platforms) < 7 {
+while ds_list_size(platforms) < 7 { 
 	var _x = platforms[| ds_list_size(platforms)-1].x;
 	var _y = platforms[| ds_list_size(platforms)-1].y;
 	var _new_x;

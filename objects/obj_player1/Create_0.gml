@@ -26,3 +26,5 @@ ds_list_add(spells, new MusicalChairs());
 ds_list_add(spells, new Maze());
 
 chosen_spell = noone;
+
+items = ds_list_create();

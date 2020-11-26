@@ -5,7 +5,7 @@ if !invincible {
 	alarm[0] = invulnerability*room_speed;
 	audio_play_sound(snd_Hit_1, 10, 0);
 	player.hp -= ennemy.effective_dmg;
-	
+	scr_display_points(player,scr_select_damage_color(ennemy.effective_dmg, ennemy.dmg),ennemy.effective_dmg);
 	
 	/*for (var i = 0; i < array_length_(obj_controller.targets); i++) {
 		obj_controller.targets[i].hp -= other.dmg/array_length_1d(obj_controller.targets);

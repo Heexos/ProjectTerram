@@ -48,3 +48,12 @@ function Weapon(_obj, _dmg, _name, _pattern) constructor {
 	name = _name;
 	pattern = _pattern;
 }
+
+global.items = ds_list_create();
+ds_list_add(global.items, new Absinthe());
+ds_list_add(global.items, new Sandwich());
+ds_list_add(global.items, new Absinthe());
+ds_list_add(global.items, new Sandwich());
+ds_list_add(global.items, new Sandwich());
+ds_list_add(global.items, new Absinthe());
+ds_list_add(global.items, new RepasCrous());

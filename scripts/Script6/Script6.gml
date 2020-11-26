@@ -1,13 +1,6 @@
 // Script assets have changed for v2.3.0 see
 // https://help.yoyogames.com/hc/en-us/articles/360005277377 for more information
-/*function scr_mana_gem_gen(){
-	var _rand = irandom(9);
-	if (_rand == 9) {
-		return obj_mana_gem_big
-	} else {
-		return obj_mana_gem
-	}
-}*/
+
 
 function scr_mana_gem_gen(_x, _y, _zone) {
 	var _i = 0, _posx = -1, _posy = -1, _gem_posx = -1, _gem_posy = -1, _gemx = -1, _gemy = -1; 
