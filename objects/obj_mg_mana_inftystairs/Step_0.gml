@@ -60,7 +60,7 @@ with mana_bloc {
 	if instance_exists(self) and place_meeting(x,y,obj_mana_player) {
 		// "scr_apply_effect()"	
 		with other {
-			creator.buffer = "SPELL_SUCCESS"
+			creator.buffer = SPELL_SUCCESS
 		}
 		
 	}

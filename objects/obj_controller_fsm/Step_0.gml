@@ -4,6 +4,7 @@
 //Lecture de la file
 if !ds_queue_empty(fsm_queue) curr_state = ds_queue_head(fsm_queue);
 
+
 if (ds_queue_size(buffer_queue) > 0) {
 	var _buffer_state = ds_queue_head(buffer_queue);
 	if _buffer_state.myState == state.target_attack {
@@ -16,7 +17,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		targeted = scr_target_ennemies(ennemies, targeted);
 		
 		
-		if buffer == "" {
+		if buffer == EMPTY {
 			scr_show_target_ennemies(ennemies, targeted);
 			if keyboard_check_pressed(vk_enter) {
 				scr_reset_alpha_ennemies(ennemies);
@@ -25,7 +26,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 				ds_queue_dequeue(buffer_queue);
 				targeted = -1;
 			}
-		} else buffer = "";
+		} else buffer = EMPTY;
 		
 	} else if _buffer_state.myState == state.choose_spell {
 		if !instance_exists(obj_selectbox_mana) {
@@ -48,7 +49,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		
 		targeted = scr_target_ennemies(ennemies, targeted);
 		
-		if buffer == "" {
+		if buffer == EMPTY {
 			scr_show_target_ennemies(ennemies, targeted);
 			if keyboard_check_pressed(vk_enter) {
 				scr_reset_alpha_ennemies(ennemies);
@@ -59,7 +60,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 				ds_queue_dequeue(buffer_queue);
 				targeted = -1;
 			}
-		} else buffer = "";
+		} else buffer = EMPTY;
 		
 
 		
@@ -175,16 +176,16 @@ if (ds_queue_size(buffer_queue) > 0) {
 } else if curr_state.myState == state.choose_act {
 	
 	//Simon et gestion de la file
-	if !instance_exists(obj_simon) and buffer == "" {
+	if !instance_exists(obj_simon) and buffer == EMPTY {
 		simon = instance_create_layer(0, 0, "GUI", obj_simon);
-	} else if buffer != "" {
+	} else if buffer != EMPTY {
 		// #clafin
 		instance_destroy(simon);
 		simon = noone;
 		var _next_state = scr_return_chosen_state(buffer);
 		ds_queue_enqueue(buffer_queue, new State(_next_state, curr_state.myPlayer, noone));
 
-		buffer = "";
+		buffer = EMPTY;
 	}
 	
 	//Fleche et personnage qui scintille
@@ -221,18 +222,18 @@ if (ds_queue_size(buffer_queue) > 0) {
 	
 	
 } else if curr_state.myState == state.defense {
-	if buffer == "" {
+	if buffer == EMPTY {
 		mg = curr_state.myEnnemy.attacks[irandom_range(0, array_length(curr_state.myEnnemy.attacks) - 1)];
 		instance_create_layer(0,0,"Instances", mg);
 		mg.creator = self;
-		buffer = "MG_CREATED";
-	} else if buffer == "MG_CREATED" {
+		buffer = MG_CREATED;
+	} else if buffer == MG_CREATED {
 		if curr_state.myPlayer.hp < 0 {
-			buffer = "MG_ENDED";
+			buffer = MG_ENDED;
 		}
-	} else if buffer = "MG_ENDED" {
+	} else if buffer = MG_ENDED {
 		instance_destroy(mg);
-		buffer = "";
+		buffer = EMPTY;
 		ds_queue_dequeue(fsm_queue);
 		if ds_queue_empty(fsm_queue) {
 			for ( var i = 0; i < ds_list_size(players); i++ ) {
@@ -258,7 +259,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 		_mg.creator = self;
 	}
 	
-	if buffer != "" {
+	if buffer != EMPTY {
 		if !instance_exists(obj_mana_particle_win) {
 			if !sprite_exists(global.snap_mana) { 
 				global.snap_mana = sprite_create_from_surface(application_surface, (room_width - 224) / 2-3, room_height/2-3, 231, 231, false, false, 0, 0);
@@ -271,9 +272,9 @@ if (ds_queue_size(buffer_queue) > 0) {
 			
 		}
 
-		if buffer != "" {
+		if buffer != EMPTY {
 			instance_destroy(_mg);
-			if buffer == "SPELL_SUCCESS" {
+			if buffer == SPELL_SUCCESS {
 				// pour les particules
 				fade_timer--;
 				if (fade_timer <=0) {
@@ -286,7 +287,7 @@ if (ds_queue_size(buffer_queue) > 0) {
 			if curvePos >= 1 {
 				curvePos = 0;
 				ds_queue_dequeue(fsm_queue);
-				buffer = "";
+				buffer = EMPTY;
 			}
 		}
 		

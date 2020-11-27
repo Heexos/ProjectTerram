@@ -1,2 +1,2 @@
 /// @description Fin (Loose)
-creator.buffer = "SPELL_MISSED"
+creator.buffer = SPELL_FAIL

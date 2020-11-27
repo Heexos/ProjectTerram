@@ -28,4 +28,4 @@ until(ds_list_empty(stack)); // the stack is empty; all cells have been visited
  
  
  
-if instance_number(obj_mg_mana) <= 0 creator.buffer = "SPELL_SUCCESS";
+if instance_number(obj_mg_mana) <= 0 creator.buffer = SPELL_SUCCESS

@@ -2,6 +2,13 @@
 // Vous pouvez écrire votre code dans cet éditeur
 randomize();
 
+#macro EMPTY -1
+#macro MG_CREATED 0
+#macro MG_ENDED 1
+#macro SPELL_SUCCESS 2
+#macro SPELL_FAIL 3
+
+
 
 fsm_queue = ds_queue_create();
 ds_queue_enqueue(fsm_queue, new State(state.start, noone, noone));
@@ -21,7 +28,7 @@ ennemies_pos = [{xx: 575, yy: 120}, {xx: 650, yy: 120}, {xx: 650, yy: 180}, {xx:
 
 healthbars = ds_list_create();
 
-buffer = "";
+buffer = EMPTY;
 buffer_state = noone;
 mg = noone;
 playingPlayer = noone;

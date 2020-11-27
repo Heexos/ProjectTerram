@@ -50,5 +50,5 @@ obj_mg_ennemy1.creator = self;
 
 
 if instance_number(obj_mg_mana) <= 0 {
-	creator.buffer = "SPELL_SUCCESS"
+	creator.buffer = SPELL_SUCCESS
 }
